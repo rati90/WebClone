@@ -12,10 +12,6 @@ import urllib.request
 import cssutils
 import logging
 
-print('''Python script to Clone a Web Page
-Author : Sai Kiran Goud
-Date : 17 Dec 2019
-''')
 
 
 def report(count, size, total):
