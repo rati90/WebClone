@@ -1,7 +1,7 @@
 import os
 import re
 from googletrans import Translator
-
+from bs4 import BeautifulSoup
 translator = Translator()
 
 directory = 'www.classcentral.com/'
@@ -9,31 +9,48 @@ directory = 'www.classcentral.com/'
 # find all html files
 for root, dirs, files in os.walk(directory):
     for filename in files:
-        if filename.endswith(".html"):
+        if filename.endswith("contact.html"):
             pathtofile = str(os.path.join(root, filename))
 
             print(pathtofile)
             # open html files
-            with open(pathtofile, 'r') as f:
+            with open(pathtofile, 'r+') as f:
                 html = f.read()
 
-            pattern = r'<\s*a[^>]*>(.*?)<\s*/\s*a>'
+                # pattern = r'<\s*a[^>]*>(.*?)<\s*/\s*a>'
 
-            # find texts in html files
-            string = re.findall(pattern, html)
-            for i in string:
-                try:
-                    # translate html files strings
-                    translated_string = translator.translate(text=i, src='en', dest='hindi')
-                    print(translated_string.text)
-                    html = html.replace(i, translated_string)
+                # find texts in html files
+                #string = re.findall(pattern, html)
+                soup = BeautifulSoup(html, 'html.parser')
 
-                    with open(pathtofile, "w") as f:
-                        f.write(html)
 
-                except:
-                    continue
+                allowlist = [
+                    'p'
+                ]
 
+                soup.find_all(allowlist)
+                text = soup.get_text('&#', strip=True)
+                full_text = text.split("&#")
+                print(full_text)
+
+
+                for i in full_text:
+                    try:
+                        # translate html files strings
+                        translated_string = translator.translate(text=i, src='en', dest='hindi')
+                        if translated_string == i:
+                            continue
+                        else:
+                            print(i, translated_string.text)
+                            html = html.replace(i, translated_string.text)
+                    except:
+                        print(i)
+                        continue
+
+                #write translated html back to file
+                f.seek(0)
+                f.write(html)
+                f.truncate()
 
 
 
