@@ -8,7 +8,7 @@ directory = 'www.classcentral.com/'
 # find all html files
 for root, dirs, files in os.walk(directory):
     for filename in files:
-        if filename.endswith("contact.html"):
+        if filename.endswith(".html"):
             pathtofile = str(os.path.join(root, filename))
 
             print(pathtofile)
